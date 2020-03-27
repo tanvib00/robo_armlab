@@ -14,7 +14,7 @@ def calc_space():
     r2 = 2.5
 
     # 15 by 9 array endoding corners: from -7 to 7 on x, and 0 to 8 on y
-    obstacles = np.array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    obs = np.array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                           [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
                           [0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0],
                           [0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0],
@@ -41,10 +41,10 @@ def calc_space():
             if (y < 0 or y > 8 or x < -7 or x > 7):
                 config[t2,t1] = 1
             else:
-                config[t2,t1] = obstacles[int(np.floor(y)), int(np.floor(x)+7)] & \
-                                obstacles[int(np.ceil(y)), int(np.floor(x)+7)] & \
-                                obstacles[int(np.ceil(y)), int(np.ceil(x)+7)] & \
-                                obstacles[int(np.floor(y)), int(np.ceil(x)+7)]
+                config[t2,t1] = obs[int(np.floor(y)), int(np.floor(x)+7)] & \
+                                obs[int(np.ceil(y)), int(np.floor(x)+7)] & \
+                                obss[int(np.ceil(y)), int(np.ceil(x)+7)] & \
+                                obs[int(np.floor(y)), int(np.ceil(x)+7)]
                                 
     
     plt.imsave('config_space.png', config)
