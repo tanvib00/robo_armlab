@@ -58,6 +58,8 @@ image = mpimg.imread('./1.2_images/config_space.png')
 plt.imshow(image, extent=[0,180,-180,180])
 plt.xlabel("Theta 1 (deg)")
 plt.ylabel("Theta 2 (deg)")
+plt.xticks(np.arange(0, 181, 45))
+plt.yticks(np.arange(-180, 181, 45))
 plt.show()
     
 
