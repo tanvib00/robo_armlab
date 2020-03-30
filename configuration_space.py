@@ -44,7 +44,7 @@ def calc_space():
             else:
                 config[t2,t1] = obs[int(np.floor(y)), int(np.floor(x)+7)] & \
                                 obs[int(np.ceil(y)), int(np.floor(x)+7)] & \
-                                obss[int(np.ceil(y)), int(np.ceil(x)+7)] & \
+                                obs[int(np.ceil(y)), int(np.ceil(x)+7)] & \
                                 obs[int(np.floor(y)), int(np.ceil(x)+7)]
                                 
     
