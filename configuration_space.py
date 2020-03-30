@@ -47,7 +47,8 @@ def calc_space():
                                 obs[int(np.ceil(y)), int(np.floor(x)+7)] & \
                                 obs[int(np.ceil(y)), int(np.ceil(x)+7)] & \
                                 obs[int(np.floor(y)), int(np.ceil(x)+7)]
-                                
+
+    # flip array on y axis because 0,0 on image is top left                      
     config = np.flip(config,0)
     plt.imsave('./1.2_images/config_space.png', config)
     
