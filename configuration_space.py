@@ -50,12 +50,15 @@ def calc_space():
 
     # flip array on y axis because 0,0 on image is top left                      
     config = np.flip(config,0)
-    plt.imsave('./1.2_images/config_space.png', config)
-    
+
+    return config
 
 
-calc_space()
-image = mpimg.imread('./1.2_images/config_space.png')
+image = calc_space()
+
+# plt.imsave('./1.2_images/config_space.png', config)
+# image = mpimg.imread('./1.2_images/config_space.png')
+
 plt.imshow(image, extent=[0,180,-180,180])
 plt.xlabel("Theta 1 (deg)")
 plt.ylabel("Theta 2 (deg)")
