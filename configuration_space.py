@@ -39,11 +39,14 @@ def calc_space():
             x += r2 * np.cos(np.deg2rad(t2_real))
             y += r2 * np.sin(np.deg2rad(t2_real))
 
-            
-            config[t2,t1] = obs[int(np.floor(y)), int(np.floor(x)+7)] & \
-                            obs[int(np.ceil(y)), int(np.floor(x)+7)] & \
-                            obs[int(np.ceil(y)), int(np.ceil(x)+7)] & \
-                            obs[int(np.floor(y)), int(np.ceil(x)+7)]
+            # condition to make out of bounds an obstacle 
+            if (y < 0 or y > 8 or x < -7 or x > 7):
+                config[t2,t1] = 0
+            else:
+                config[t2,t1] = obs[int(np.floor(y)), int(np.floor(x)+7)] & \
+                                obs[int(np.ceil(y)), int(np.floor(x)+7)] & \
+                                obs[int(np.ceil(y)), int(np.ceil(x)+7)] & \
+                                obs[int(np.floor(y)), int(np.ceil(x)+7)]
                                 
     
     plt.imsave('./1.2_images/config_space.png', config)
