@@ -39,7 +39,7 @@ def calc_space():
             x += r2 * np.cos(np.deg2rad(t2_real))
             y += r2 * np.sin(np.deg2rad(t2_real))
 
-            # condition to make out of bounds an obstacle 
+            # condition to make out of bounds not an obstacle 
             if (y < 0 or y > 8 or x < -7 or x > 7):
                 config[t2,t1] = 0
             else:
