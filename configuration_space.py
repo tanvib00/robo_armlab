@@ -8,6 +8,7 @@ Created on Fri Mar 27 16:58:56 2020
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 
 def calc_space():
     r1 = 3.75
@@ -47,7 +48,14 @@ def calc_space():
                                 obs[int(np.floor(y)), int(np.ceil(x)+7)]
                                 
     
-    plt.imsave('config_space.png', config)
+    plt.imsave('./1.2_images/config_space.png', config)
+    
+
+
+calc_space()
+image = mpimg.imread('./1.2_images/config_space.png')
+plt.imshow(image)
+plt.show()
     
 
 
