@@ -49,7 +49,7 @@ def calc_space():
                     obs[int(np.ceil(y)), int(np.ceil(x)+7)] & \
                     obs[int(np.floor(y)), int(np.ceil(x)+7)]
 
-      for t_circ in range(0, 360, 15):
+      for t_circ in range(0, 360, 45):
         if (collision == 0):
           x_c = x + r_endeff * np.cos(np.deg2rad(t_circ))
           y_c = y + r_endeff * np.sin(np.deg2rad(t_circ))
