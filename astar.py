@@ -65,9 +65,11 @@ def goalSearch(waypoints,start,goal):
     
 # returns Euclidean Distance between points  
 def euclideanDistance(x1,y1,x2,y2):
-    return sqrt(pow(x1-x2,2) + pow(y1-y2,2))
-
-
+    xdist = x2 - x1
+    ydist = abs(y1 - y2)
+    if (ydist > 180):
+        ydist = 360 - ydist
+    return sqrt(pow(xdist,2) + pow(ydist,2))
 
 
 class PriorityQueue:

@@ -91,7 +91,15 @@ def closeEnough(curr, end, radius=0.05):
 
 ''' Euclidean Distance between two tuples/arrays '''
 def euclideanDistance(a1,a2):
-    return sqrt((a1[0] - a2[0])**2 + (a1[1] - a2[1])**2)
+    x1 = a1[0]
+    x2 = a2[0]
+    y1 = a1[1]
+    y2 = a2[1]
+    xdist = x2 - x1
+    ydist = abs(y1 - y2)
+    if (ydist > 180):
+        ydist = 360 - ydist
+    return sqrt(pow(xdist,2) + pow(ydist,2))
 
 
 def calcPowers(posx, posy, goalx, goaly, theta):
