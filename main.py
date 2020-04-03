@@ -64,18 +64,19 @@ if __name__ == '__main__':
     arm.Cy = Cy*0.0254; # Simulaiton is in SI units
 
     # Plan a path
+    ax, ay, bx, by, cx, cy = doInverseKinematics(Ax, Ay, Bx, By, Cx, Cy)
 
-    course = pathfind.generateMap() # generate map: list of waypoints
-    path1 = astar(course, 0, 0, Ax, Ay) # get the path as a list of tuples
-    path2 = astar(course, Ax, Ay, Bx, By) # get the path as a list of tuples
-    path3 = astar(course, Bx, By, Cx, Cy) # get the path as a list of tuples
+    course = pathfind.generateMap() # generate map: list of waypoints # TODO
+    path1 = astar(course, 0, 0, ax, ay) # get the path as a list of tuples
+    path2 = astar(course, ax, ay, bx, by) # get the path as a list of tuples
+    path3 = astar(course, bx, by, cx, cy) # get the path as a list of tuples
     pth = [path1, path2, path3]
     path = [i for lst in pth for i in lst]
     numberOfWaypoints = len(path) # Change this based on your path
     print("Path points: ", path) # display path
     
     robotPos = [0,0]
-    ax, ay, bx, by, cx, cy = doInverseKinematics(Ax, Ay, Bx, By, Cx, Cy)
+    
     a = [ax,ay]
     b = [bx,by]
     c = [cx,cy]
@@ -127,6 +128,11 @@ if __name__ == '__main__':
             
             arm.render() # Update rendering
             state, reward, terminal , __ = arm.step(actionHere1, actionHere2)
+            
+        if close enough to target
+            if target is a, b, or c
+                hold
+            index++
         
     print("Done")
     input("Press Enter to close...")
