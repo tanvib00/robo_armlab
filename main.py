@@ -4,6 +4,7 @@ import sys
 import math
 import copy
 import numpy as np
+import pathfind #need to edit pathfind
 
 if __name__ == '__main__':
 

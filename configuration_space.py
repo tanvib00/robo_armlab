@@ -13,7 +13,7 @@ import matplotlib.image as mpimg
 def calc_space():
   r1 = 3.75 # length of the first arm link
   r2 = 2.5 # length of the second arm link
-  r_endeff = 0.1 # radius of the end-effector
+  r_endeff = 0.2 # radius of the end-effector
 
   # 15 by 9 array encoding corners: from -7 to 7 on x, and 0 to 8 on y
   obs = np.array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
