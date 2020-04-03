@@ -201,5 +201,3 @@ def main():
     
     except KeyboardInterrupt:
         BP.reset_all()
-
-main()
