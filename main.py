@@ -6,10 +6,21 @@ import copy
 import numpy as np
 import pathfind #need to edit pathfind
 
+r1 = 3.75 # length of the first arm link
+r2 = 2.5 # length of the second arm link
 
-#TODO: inverse kinematics
+
 def doInverseKinematics(Ax, Ay, Bx, By, Cx, Cy):
-    return (Ax, Ay, Bx, By, Cx, Cy)
+    A2 = math.acos((pow(Ax, 2) + pow(Ay, 2) - pow(r1, 2) - pow(r2, 2)) / 2 * r1 * r1)
+    A1 = math.atan2(Ay / Ax) - math.atan2((r2 * math.sin(A2))/ (r1 + r2 * math.cos(A2)))
+    
+    B2 = math.acos((pow(Bx, 2) + pow(By, 2) - pow(r1, 2) - pow(r2, 2)) / 2 * r1 * r1)
+    B1 = math.atan2(By / Bx) - math.atan2((r2 * math.sin(B2))/ (r1 + r2 * math.cos(B2)))
+    
+    C2 = math.acos((pow(Cx, 2) + pow(Cy, 2) - pow(r1, 2) - pow(r2, 2)) / 2 * r1 * r1)
+    C1 = math.atan2(Cy / Cx) - math.atan2((r2 * math.sin(C2))/ (r1 + r2 * math.cos(C2)))
+    
+    return (np.rad2deg(A1), np.rad2deg(A2), np.rad2deg(B1), np.rad2deg(B2), np.rad2deg(C1), np.rad2deg(C2))
 
 
 #TODO: calculate the torques. can do PID in here mayb
