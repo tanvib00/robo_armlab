@@ -15,70 +15,78 @@ HELPER FUNCTIONS
 ''' Generate the waypoint map '''
 def generateMap():
     
-    p1 = Waypoint(9,9)
-    p2 = Waypoint(18,9)
-    p3 = Waypoint(27,9)
-    p4 = Waypoint(36,9)
-    p5 = Waypoint(45,9)
-    p6 = Waypoint(54,9)
-    p7 = Waypoint(63,9)
+    # Waypoints are (theta1, theta2)
+
+    p0 = Waypoint(47, 175)
+    p1 = Waypoint(7, 151)
+    p2 = Waypoint(147, 164)
+    p3 = Waypoint(105, 123)
+    p4 = Waypoint(166, 116)
+
+    p5 = Waypoint(12, 89)
+    p6 = Waypoint(58, 101)
+    p7 = Waypoint(136, 76)
+    p8 = Waypoint(77, 50)
+    p9 = Waypoint(24, 29)
+
+    p10 = Waypoint(155, 16)
+    p11 = Waypoint(96, -1)
+    p12 = Waypoint(51, -18)
+    p13 = Waypoint(16, -38)
+    p14 = Waypoint(62, -61)
+
+    p15 = Waypoint(114, -45)
+    p16 = Waypoint(172, -52)
+    p17 = Waypoint(13, -106)
+    p18 = Waypoint(87, -98)
+    p19 = Waypoint(127, -82)
+
+    p20 = Waypoint(130, -105)
+    p21 = Waypoint(168, -109)
+    p22 = Waypoint(62, -127)
+    p23 = Waypoint(26, -171)
+    p24 = Waypoint(78, -161)
     
-    p8 = Waypoint(9,17)
-    p9 = Waypoint(15,20)
-    p10 = Waypoint(19,27)
-    p11 = Waypoint(38,20)
-    p12 = Waypoint(32,27)
+    p25 = Waypoint(175, -150)
+    p26 = Waypoint(175, -175)
 
-    p13 = Waypoint(26.5,41)
-    p13a = Waypoint(26.5,33)
-    p14 = Waypoint(43,41)
-    p15 = Waypoint(54,26)
-    p16 = Waypoint(55,17)
-    p17 = Waypoint(66,24)
-    p18 = Waypoint(66,40)
 
-    pa = Waypoint(9,48)
-    pb = Waypoint(18,48)
-    pc = Waypoint(27,48)
-    pd = Waypoint(37,48)
-    pe = Waypoint(45,48)
-    pf = Waypoint(54,48)
-    pg = Waypoint(63,48)
-    pz = Waypoint(8,41)
-
+    p0.neighbors = [p1,p23,p24]
+    p1.neighbors = [p23,p0,p5]
+    p2.neighbors = [p26,p3,p4]
+    p3.neighbors = [p2,p4,p6,p7]
+    p4.neighbors = [p26,p2,p3,p7,p10]
     
-    p1.neighbors = [p2,p8,p9]
-    p2.neighbors = [p1,p9, p3]
-    p3.neighbors = [p2,p4,p9,p11]
-    p4.neighbors = [p3,p5,p11,p16]
-    p5.neighbors = [p4,p6,p11,p16]
-    p6.neighbors = [p5,p16,p7,p17]
-    p7.neighbors = [p6,p16,p17]
+    p5.neighbors = [p1,p6,p9]
+    p6.neighbors = [p3,p5,p8]
+    p7.neighbors = [p3,p4,p10]
+    p8.neighbors = [p6,p11]
+    p9.neighbors = [p5,p12,p13]
+
+    p10.neighbors = [p4,p7,p16]
+    p11.neighbors = [p8,p15]
+    p12.neighbors = [p9,p13,p14]
+    p13.neighbors = [p9,p12,p14,p17,p22]
+    p14.neighbors = [p12,p13,p17,p18,p22]
+
+    p15.neighbors = [p11,p19]
+    p16.neighbors = [p10,p21]
+    p17.neighbors = [p13,p14,p22,p23]
+    p18.neighbors = [p14,p17,p19,p20,p22,p24]
+    p19.neighbors = [p15,p18,p20]
+
+    p20.neighbors = [p18,p19,p21]
+    p21.neighbors = [p16,p20,p25]
+    p22.neighbors = [p13,p14,p17,p18,p23,p24]
+    p23.neighbors = [p17,p22,p24,p0,p1]
+    p24.neighbors = [p18,p22,p23,p0]
     
-    p8.neighbors = [p1,p9]
-    p9.neighbors = [p8,p1,p2,p3,p10]
-    p10.neighbors = [p9,p13a]
-    p11.neighbors = [p3,p4,p5,p16,p12]
-    p12.neighbors = [p11,p13a]
-    p13a.neighbors = [p10,p12,p13]
-    p13.neighbors = [p13a,pc]
-    p14.neighbors = [p15,pd,pe]
-    p15.neighbors = [p16,p14]
-    p16.neighbors = [p11,p5,p4,p6,p7,p17]
-    p17.neighbors = [p6,p7,p16,p18]
-    p18.neighbors = [p17,pg]
-    
-    pa.neighbors = [pz,pb]
-    pb.neighbors = [pa,pc]
-    pc.neighbors = [pb,pd,p13]
-    pd.neighbors = [pc,p14,pe]
-    pe.neighbors = [pd,p14,pf]
-    pf.neighbors = [pe,pg]
-    pg.neighbors = [pf,p18]
-    pz.neighbors = [pa]
+    p25.neighbors = [p21,p26]
+    p26.neighbors = [p25,p2,p4]
 
 
-    return [p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13a,p13,p14,p15,p16,p17,p18,pa,pb,pc,pd,pe,pf,pg,pz]
+    return [p0,p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17, \
+            p18,p19,p20,p21,p22,p23,p24,p25,p26]
 
 
 ''' Define when the robot can stop moving '''
