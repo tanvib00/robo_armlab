@@ -20,10 +20,12 @@ def doInverseKinematics(Ax, Ay, Bx, By, Cx, Cy):
     C2 = math.acos((pow(Cx, 2) + pow(Cy, 2) - pow(r1, 2) - pow(r2, 2)) / 2 * r1 * r1)
     C1 = math.atan2(Cy / Cx) - math.atan2((r2 * math.sin(C2))/ (r1 + r2 * math.cos(C2)))
     
+    // NOTE: This only returns the solution with a positive theta2 value
+    
     return (np.rad2deg(A1), np.rad2deg(A2), np.rad2deg(B1), np.rad2deg(B2), np.rad2deg(C1), np.rad2deg(C2))
 
 
-#TODO: calculate the torques. can do PID in here mayb
+#TODO: calculate the torques. can do PID in here maybe
 def calcTorques(roboState, target)
     t1actual = roboState[0]
     t2actual = roboState[1]
