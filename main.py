@@ -140,11 +140,10 @@ if __name__ == '__main__':
             # print(arm.state[0], arm.state[1])
             
              # assuming action1 means action for link1, etc
-            action1 = calcTorques(arm.state, target)[0] # N torque # Change this based on your controller
-            action2 = calcTorques(arm.state, target)[1] # N torque # Change this based on your controller
+            actions = calcTorques(arm.state, target) # N torque # Change this based on your controller
             
             arm.render() # Update rendering
-            state, reward, terminal , __ = arm.step(action1, action2)
+            state, reward, terminal , __ = arm.step(actions[0], actions[1])
 
             # if target is a, b, or c
             #     hold
