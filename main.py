@@ -1,5 +1,5 @@
 import time
-from arm import AcrobotEnv
+from armNew import AcrobotEnv
 import sys
 import math
 import copy
@@ -52,8 +52,9 @@ def calcTorques(roboState, target):
     tor2 = Kp2 * t2err
     # print(tor1, tor2)
     # 10 * Kg * math.cos(roboState[0]) + Kg * math.cos(roboState[0] + roboState[1])
-    print(t1actual, t2actual)
-    return(0, Kg2)
+    # print(t1actual, t2actual)
+    print(Kg2)
+    return(0, 0)
 
 
 if __name__ == '__main__':
