@@ -5,37 +5,44 @@ import math
 import copy
 import numpy as np
 import pathfind #need to edit pathfind
+from pathfind import closeEnough
+from astar import astar
 
 r1 = 3.75 # length of the first arm link
 r2 = 2.5 # length of the second arm link
 
 
 def doInverseKinematics(Ax, Ay, Bx, By, Cx, Cy):
-    A2 = math.acos((pow(Ax, 2) + pow(Ay, 2) - pow(r1, 2) - pow(r2, 2)) / 2 * r1 * r1)
-    A1 = math.atan2(Ay / Ax) - math.atan2((r2 * math.sin(A2))/ (r1 + r2 * math.cos(A2)))
+    A2 = math.acos((pow(Ax, 2) + pow(Ay, 2) - pow(r1, 2) - pow(r2, 2)) / (2 * r1 * r1))
+    A1 = math.atan2(Ay, Ax) - math.atan2((r2 * math.sin(A2)), (r1 + r2 * math.cos(A2)))
     
-    B2 = math.acos((pow(Bx, 2) + pow(By, 2) - pow(r1, 2) - pow(r2, 2)) / 2 * r1 * r1)
-    B1 = math.atan2(By / Bx) - math.atan2((r2 * math.sin(B2))/ (r1 + r2 * math.cos(B2)))
+    B2 = math.acos((pow(Bx, 2) + pow(By, 2) - pow(r1, 2) - pow(r2, 2)) / (2 * r1 * r1))
+    B1 = math.atan2(By, Bx) - math.atan2((r2 * math.sin(B2)), (r1 + r2 * math.cos(B2)))
     
-    C2 = math.acos((pow(Cx, 2) + pow(Cy, 2) - pow(r1, 2) - pow(r2, 2)) / 2 * r1 * r1)
-    C1 = math.atan2(Cy / Cx) - math.atan2((r2 * math.sin(C2))/ (r1 + r2 * math.cos(C2)))
+    C2 = math.acos((pow(Cx, 2) + pow(Cy, 2) - pow(r1, 2) - pow(r2, 2)) / (2 * r1 * r1))
+    C1 = math.atan2(Cy, Cx) - math.atan2((r2 * math.sin(C2)), (r1 + r2 * math.cos(C2)))
     
-    // NOTE: This only returns the solution with a positive theta2 value
+    # NOTE: This only returns the solution with a positive theta2 value
     
     return (np.rad2deg(A1), np.rad2deg(A2), np.rad2deg(B1), np.rad2deg(B2), np.rad2deg(C1), np.rad2deg(C2))
 
 
 #TODO: calculate the torques. can do PID in here maybe
-def calcTorques(roboState, target)
-    t1actual = roboState[0]
-    t2actual = roboState[1]
+def calcTorques(roboState, target):
+    Kp = 0.15
+    Kd = 0.1
+    Ki = 0.1
+    
+    t1actual = roboState[0] / math.pi * 180
+    t2actual = roboState[1] / math.pi * 180
     t1goal = target[0]
     t2goal = target[1]
     t1err = t1goal - t1actual
     t2err = t2goal - t2actual
     
-    tor1 = t1err * 5
-    tor2 = t2err * 5 # arbitrary number rn
+    tor1 = 0.002 * (Kp * t1err) #+ Kd * d_t1err
+    tor2 = 0.0002 * (Kp * t2err) #+ Kd * d_t2err
+    # print(tor1, tor2)
     return(tor1, tor2)
 
 
@@ -44,7 +51,7 @@ if __name__ == '__main__':
     arm = AcrobotEnv() # set up an instance of the arm class
     
     timeStep = 0.02 # sec
-    timeForEachMove = 1 # sec
+    timeForEachMove = 3 # sec
     stepsForEachMove = round(timeForEachMove/timeStep)
 
     # Make configuration space
@@ -84,8 +91,8 @@ if __name__ == '__main__':
     c = [cx,cy]
 
     index = 1 # where we are in the path list
-    target_point1 = path[index]
-    on_point = False
+    # target_point1 = path[index]
+    # on_point = False
 
     '''
     while (euclideanDistance(robotPos, path[index]) < 4.0 and not on_point):
@@ -113,28 +120,24 @@ if __name__ == '__main__':
     
     arm.reset() # start simulation
     
-    for idx in range(numberOfWaypoints):
+    for idx in range(1, numberOfWaypoints):
 
         # Get current waypoint
         target = path[idx]
+        print(target)
 
-        for timeStep in range(stepsForEachMove):
-
-            tic = time.perf_counter()
-
-            # Control arm to reach this waypoint
-
-	    # assuming actionHere1 means action for link1, etc
-            actionHere1 = calcTorques(arm.state, target)[0] # N torque # Change this based on your controller
-            actionHere2 = calcTorques(arm.state, target)[1] # N torque # Change this based on your controller
+        while (not closeEnough(robotPos, target)):
+            # print(arm.state[0], arm.state[1])
+            
+             # assuming action1 means action for link1, etc
+            action1 = calcTorques(arm.state, target)[0] # N torque # Change this based on your controller
+            action2 = calcTorques(arm.state, target)[1] # N torque # Change this based on your controller
             
             arm.render() # Update rendering
-            state, reward, terminal , __ = arm.step(actionHere1, actionHere2)
-            
-        if close enough to target
-            if target is a, b, or c
-                hold
-            index++
+            state, reward, terminal , __ = arm.step(action1, action2)
+
+            # if target is a, b, or c
+            #     hold
         
     print("Done")
     input("Press Enter to close...")
