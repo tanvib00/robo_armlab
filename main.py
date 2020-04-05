@@ -29,21 +29,28 @@ def doInverseKinematics(Ax, Ay, Bx, By, Cx, Cy):
 
 #TODO: calculate the torques. can do PID in here maybe
 def calcTorques(roboState, target):
-    Kp = 0.15
-    Kd = 0.1
+    # link 1 is 0.005 kg
+    # link 2 is 0.001 kg
+    Kp = 0.4
+    Kd = 0.001
     Ki = 0.1
+    Kg = 0.0005
     
-    t1actual = roboState[0] / math.pi * 180
-    t2actual = roboState[1] / math.pi * 180
+    t1vel = roboState[2] / math.pi * 180
+    t2vel = roboState[3] / math.pi * 180
+    
+    t1actual = roboState[0] / math.pi * 180.0
+    t2actual = roboState[1] / math.pi * 180.0
     t1goal = target[0]
     t2goal = target[1]
     t1err = t1goal - t1actual
     t2err = t2goal - t2actual
-    
-    tor1 = 0.002 * (Kp * t1err) #+ Kd * d_t1err
-    tor2 = 0.0002 * (Kp * t2err) #+ Kd * d_t2err
+    print(Kp * t2err, Kd * t2vel)
+    tor1 = 0.002 * (Kp * t1err - Kd * t1vel + Kg * math.cos(t1actual))
+    tor2 = 0.0002 * (Kp * t2err - Kd * t2vel + Kg * math.cos(t1actual + t2actual))
     # print(tor1, tor2)
-    return(tor1, tor2)
+    # 10 * Kg * math.cos(roboState[0]) + Kg * math.cos(roboState[0] + roboState[1])
+    return(0, Kg * math.cos(roboState[0] + roboState[1]))
 
 
 if __name__ == '__main__':
