@@ -17,6 +17,7 @@ def generateMap():
     
     # Waypoints are (theta1, theta2)
 
+    p00 = Waypoint(0, 0)
     p0 = Waypoint(47, 175)
     p1 = Waypoint(7, 151)
     p2 = Waypoint(147, 164)
@@ -51,6 +52,7 @@ def generateMap():
     p26 = Waypoint(175, -175)
 
 
+    p00.neighbors = [p9,p13]
     p0.neighbors = [p1,p23,p24]
     p1.neighbors = [p23,p0,p5]
     p2.neighbors = [p26,p3,p4]
@@ -61,12 +63,12 @@ def generateMap():
     p6.neighbors = [p3,p5,p8]
     p7.neighbors = [p3,p4,p10]
     p8.neighbors = [p6,p11]
-    p9.neighbors = [p5,p12,p13]
+    p9.neighbors = [p00,p5,p12,p13]
 
     p10.neighbors = [p4,p7,p16]
     p11.neighbors = [p8,p15]
     p12.neighbors = [p9,p13,p14]
-    p13.neighbors = [p9,p12,p14,p17,p22]
+    p13.neighbors = [p00,p9,p12,p14,p17,p22]
     p14.neighbors = [p12,p13,p17,p18,p22]
 
     p15.neighbors = [p11,p19]
