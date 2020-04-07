@@ -1,5 +1,5 @@
 import time
-from armNew import AcrobotEnv
+from arm import AcrobotEnv
 import sys
 import math
 import copy
@@ -33,70 +33,52 @@ def calcTorques(state, prev_state, prev_time, sums, target):
   
   # link 1 is 0.005 kg
   # link 2 is 0.001 kg
-  Kp1 = 0.00001
-  Kd1 = 0.000009
-  Ki1 = 0.00001
+  Kp1 = 0.01
+  Kd1 = 0.00#1
+  Ki1 = 0.00#5
   
   Kp2 = 0.01 # 0.00001
-  Kd2 = 0.00003
-  Ki2 = 0.00000#3
+  Kd2 = 0.000#1
+  Ki2 = 0.00#1
   
-  Kg1 = 0.1 * (0.002336* math.cos(state[0]) + (0.00981 * (0.09525 * math.cos(state[0]) + 0.03175 * math.cos(state[0] + state[1]))))
-  Kg2 = (0.0003114675 * math.cos(state[0] + state[1]))
+  Kg1 = (0.002336* math.cos(state[0]) + (0.00981 * (0.09525 * math.cos(state[0]) + 0.03175 * math.cos(state[0] + state[1]))))
+  Kg2 = 0.75 * (0.0003114675 * math.cos(state[0] + state[1]))
   
   dt = time.time() - prev_time
-  prev_t1actual = prev_state[0] / math.pi * 180.0
-  prev_t2actual = prev_state[1] / math.pi * 180.0
   
-  t1actual = state[0] / math.pi * 180.0
-  t2actual = state[1] / math.pi * 180.0
+  # delta1 = prev_state[0] - state[0]
+  # delta2 = prev_state[1] - state[1]
   
-  delta1 = prev_t1actual - t1actual
-  delta2 = prev_t2actual - t2actual
+  # # Adjust for modular ambiguity    
+  # if (delta2 > math.pi):
+  #   delta2 = (2 * math.pi) - delta2 
+  # elif (delta2 < (-1 * math.pi)):
+  #   delta2 = (2 * math.pi) + delta2
+    
+  # dt1 = 0
+  # dt2 = 0
+  
+  # if (dt != 0):
+  #   dt1 = delta1 / dt
+  #   dt2 = delta2 / dt
+  
+  t1err = target[0] - state[0]
+  t2err = -6 *  math.pi / 10 - state[1]
   
   # Adjust for modular ambiguity
-  if (delta1 > 180):
-    delta1 = 360 - delta1
-  elif (delta1 < -180):
-    delta1 = 360 + delta1
+  if (t2err > math.pi):
+    t2err = (2 * math.pi) - t2err
+  elif (t2err < (-1 * math.pi)):
+    t2err = (2 * math.pi) + t2err
     
-  if (delta2 > 180):
-    delta2 = 360 - delta2 
-  elif (delta2 < -180):
-    delta2 = 360 + delta2
+  sums[0] = sums[0] + (t1err * dt)
+  sums[1] = sums[1] + (t2err * dt)
     
-  if (dt != 0):
-    dt1 = delta1 / dt
-    dt2 = delta2 / dt
-  else:
-    dt1 = 0
-    dt2 = 0
-  
-  t1goal = target[0]
-  t2goal = 135 #target[1]
-  t1err = t1goal - t1actual
-  t2err = t2goal - t2actual
-  
-  # Adjust for modular ambiguity
-  if (t1err > 180):
-    t1err = 360 - t1err
-  elif (t1err < -180):
-    t1err = 360 + t1err
-    
-  if (t2err > 180):
-    t2err = 360 - t2err 
-  elif (t2err < -180):
-    t2err = 360 + t2err  
-    
-  sums[0] = 0.99 * (sums[0]) + (t1err * dt)
-  sums[1] = 0.99 * (sums[1]) + (t2err * dt)
-  print(t2actual)
-  
-  tor1 = Kp1 * t1err + Kd1 * dt1 + Kg1 + offset
-  tor2 = Kp2 * t2err + Kd2 * dt2 + Kg2 + Ki2 * sums[1]# - (offset * (0.1 * (t2actual / 90.0)))
-  #print(Kp2 * t2err, Kd2 * dt2, Kg2, Ki2 * sums[1])
+  tor1 = Kp1 * t1err - Kd1 * state[2] + Ki1 * sums[0] + Kg1
+  tor2 = Kp2 * t2err - Kd2 * state[3] + Ki2 * sums[1] #Kg2 # - (offset * (0.1 * (t2actual / 90.0)))
+  #print(Kp2 * t2err, -1 * Kd2 * state[3])
   #print(np.deg2rad(Kp2 * t2err), np.deg2rad(Kd2 * dt2))
-  return(0, np.deg2rad(Kp2 * t2err) + Kg2, sums)
+  return(-5, Kg2, sums)
 
 
 if __name__ == '__main__':
@@ -194,7 +176,14 @@ if __name__ == '__main__':
       prev_state = arm.state
       
       arm.render() # Update rendering
-      state, reward, terminal , __ = arm.step(actions[0], actions[1])
+      if (time.time() - start_time < 9.4):
+        state, reward, terminal , __ = arm.step(actions[0], actions[1] - 0.00147)
+      elif (time.time() - start_time < 15):
+        print("5+")
+        state, reward, terminal , __ = arm.step(actions[0], actions[1] - 0.00112)
+      else:
+        print((0.0011 * 0.99**(time.time() - start_time)))
+        state, reward, terminal , __ = arm.step(actions[0], actions[1] - (0.0014 * 0.96**(time.time() - start_time)))
       
       time.sleep(0.02)
 
