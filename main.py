@@ -1,5 +1,5 @@
 import time
-from arm import AcrobotEnv
+from armNew import AcrobotEnv
 import sys
 import math
 import copy
@@ -33,16 +33,16 @@ def calcTorques(state, prev_state, prev_time, sums, target):
   
   # link 1 is 0.005 kg
   # link 2 is 0.001 kg
-  Kp1 = 0.01
-  Kd1 = 0.00#1
-  Ki1 = 0.00#5
+  Kp1 = 0.05
+  Kd1 = 0.001#1
+  Ki1 = 0.035#5
   
   Kp2 = 0.01 # 0.00001
-  Kd2 = 0.000#1
-  Ki2 = 0.00#1
+  Kd2 = 0.00013#1
+  Ki2 = 0.005#1
   
   Kg1 = (0.002336* math.cos(state[0]) + (0.00981 * (0.09525 * math.cos(state[0]) + 0.03175 * math.cos(state[0] + state[1]))))
-  Kg2 = 0.75 * (0.0003114675 * math.cos(state[0] + state[1]))
+  Kg2 = (0.0003114675 * math.cos(state[0] + state[1]))
   
   dt = time.time() - prev_time
   
@@ -62,8 +62,8 @@ def calcTorques(state, prev_state, prev_time, sums, target):
   #   dt1 = delta1 / dt
   #   dt2 = delta2 / dt
   
-  t1err = target[0] - state[0]
-  t2err = -6 *  math.pi / 10 - state[1]
+  t1err = np.deg2rad(target[0]) - state[0]
+  t2err = np.deg2rad(target[1]) - state[1]
   
   # Adjust for modular ambiguity
   if (t2err > math.pi):
@@ -75,10 +75,10 @@ def calcTorques(state, prev_state, prev_time, sums, target):
   sums[1] = sums[1] + (t2err * dt)
     
   tor1 = Kp1 * t1err - Kd1 * state[2] + Ki1 * sums[0] + Kg1
-  tor2 = Kp2 * t2err - Kd2 * state[3] + Ki2 * sums[1] #Kg2 # - (offset * (0.1 * (t2actual / 90.0)))
+  tor2 = Kp2 * t2err - Kd2 * state[3] + Ki2 * sums[1] + Kg2 # - (offset * (t2actual / 90.0))
   #print(Kp2 * t2err, -1 * Kd2 * state[3])
   #print(np.deg2rad(Kp2 * t2err), np.deg2rad(Kd2 * dt2))
-  return(-5, Kg2, sums)
+  return(tor1, tor2, sums)
 
 
 if __name__ == '__main__':
@@ -99,6 +99,8 @@ if __name__ == '__main__':
   By = int(input("Type By: "))
   Cx = int(input("Type Cx: "))
   Cy = int(input("Type Cy: "))
+  
+  print(1)
 
   arm.Ax = Ax*0.0254; # Simulaiton is in SI units
   arm.Ay = Ay*0.0254; # Simulaiton is in SI units
@@ -107,13 +109,25 @@ if __name__ == '__main__':
   arm.Cx = Cx*0.0254; # Simulaiton is in SI units
   arm.Cy = Cy*0.0254; # Simulaiton is in SI units
 
+  print(2)
+  
   # Plan a path
   ax, ay, bx, by, cx, cy = doInverseKinematics(Ax, Ay, Bx, By, Cx, Cy)
+  
+  print(3)
 
   course = pathfind.generateMap() # generate map: list of waypoints # TODO
   path1 = astar(course, 0, 0, ax, ay) # get the path as a list of tuples
+  
+  print(4)
+  
   path2 = astar(course, ax, ay, bx, by) # get the path as a list of tuples
+  
+  print(5)
+  
   path3 = astar(course, bx, by, cx, cy) # get the path as a list of tuples
+  
+  print(6)
   pth = [path1, path2, path3]
   path = [i for lst in pth for i in lst]
   numberOfWaypoints = len(path) # Change this based on your path
@@ -121,9 +135,9 @@ if __name__ == '__main__':
   
   robotPos = [0,0]
   
-  a = [ax,ay]
-  b = [bx,by]
-  c = [cx,cy]
+  a = (ax,ay)
+  b = (bx,by)
+  c = (cx,cy)
 
   index = 1 # where we are in the path list
   # target_point1 = path[index]
@@ -166,7 +180,7 @@ if __name__ == '__main__':
     target = path[idx]
     print(target)
 
-    while (not closeEnough(robotPos, target)):
+    while (((target == a or target == b or target == c) and not closeEnough(robotPos, target, 0.1)) or (target != a and target != b and target != c and not closeEnough(robotPos, target))):
       # print(arm.state[0], arm.state[1])
       
         # assuming action1 means action for link1, etc
@@ -175,20 +189,15 @@ if __name__ == '__main__':
       prev_time = time.time()
       prev_state = arm.state
       
-      arm.render() # Update rendering
-      if (time.time() - start_time < 9.4):
-        state, reward, terminal , __ = arm.step(actions[0], actions[1] - 0.00147)
-      elif (time.time() - start_time < 15):
-        print("5+")
-        state, reward, terminal , __ = arm.step(actions[0], actions[1] - 0.00112)
-      else:
-        print((0.0011 * 0.99**(time.time() - start_time)))
-        state, reward, terminal , __ = arm.step(actions[0], actions[1] - (0.0014 * 0.96**(time.time() - start_time)))
       
-      time.sleep(0.02)
+      state, reward, terminal , __ = arm.step(actions[0], actions[1])
+      
+      arm.render() # Update rendering
 
       # if target is a, b, or c
       #     hold
+      
+      robotPos = [np.rad2deg(arm.state[0]), np.rad2deg(arm.state[1])]
       
   print("Done")
   input("Press Enter to close...")
