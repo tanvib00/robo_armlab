@@ -196,3 +196,7 @@ if __name__ == '__main__':
   print("Done")
   input("Press Enter to close...")
   arm.close()
+
+def clearParents(waypoints):
+    for w in waypoints:
+        w.parent = None
