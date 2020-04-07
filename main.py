@@ -7,6 +7,7 @@ import numpy as np
 import pathfind #need to edit pathfind
 from pathfind import closeEnough
 from astar import astar
+from show_path import show_path
 
 r1 = 3.75 # length of the first arm link
 r2 = 2.5 # length of the second arm link
@@ -39,7 +40,6 @@ def doInverseKinematics(Ax, Ay, Bx, By, Cx, Cy):
 
 #TODO: calculate the torques. can do PID in here maybe
 def calcTorques(state, prev_state, prev_time, sums, target):
-  offset = 0.000405
   
   # link 1 is 0.005 kg
   # link 2 is 0.001 kg
@@ -77,15 +77,16 @@ def calcTorques(state, prev_state, prev_time, sums, target):
   
   # Adjust for modular ambiguity
   if (t2err > math.pi):
-    t2err = (2 * math.pi) - t2err
+    t2err = -1 * ((2 * math.pi) - t2err)
   elif (t2err < (-1 * math.pi)):
     t2err = (2 * math.pi) + t2err
-    
+        
   sums[0] = sums[0] + (t1err * dt)
   sums[1] = sums[1] + (t2err * dt)
     
   tor1 = Kp1 * t1err - Kd1 * state[2] + Ki1 * sums[0] + Kg1
   tor2 = Kp2 * t2err - Kd2 * state[3] + Ki2 * sums[1] + Kg2 # - (offset * (t2actual / 90.0))
+  
   #print(Kp2 * t2err, -1 * Kd2 * state[3])
   #print(np.deg2rad(Kp2 * t2err), np.deg2rad(Kd2 * dt2))
   return(tor1, tor2, sums)
@@ -137,8 +138,9 @@ if __name__ == '__main__':
   pth = [path1[0:-1], path2[0:-1], path3]
   path = [i for lst in pth for i in lst]
   numberOfWaypoints = len(path) # Change this based on your path
-  print("Path points: ", path) # display path
   
+  show_path(path)
+  '''
   oldPath = copy.deepcopy(path)
   
   for i in range(numberOfWaypoints - 1):
@@ -157,7 +159,7 @@ if __name__ == '__main__':
   numberOfWaypoints = len(path)
     
   print("Path points: ", path) # display path
-    
+  '''
   
   robotPos = [0,0]
   
@@ -204,16 +206,17 @@ if __name__ == '__main__':
 
     # Get current waypoint
     target = path[idx]
+    print(target)
     sums = [0, 0]
     prev_time = time.time()
-    print(target)
+    
 
-    while (((target == a or target == b or target == c) and not closeEnough(robotPos, target, 0.4)) or (target != a and target != b and target != c and not closeEnough(robotPos, target))):
+    while (((target == a or target == b or target == c) and not closeEnough(robotPos, target, 0.5)) or (target != a and target != b and target != c and not closeEnough(robotPos, target))):
       # print(arm.state[0], arm.state[1])
       
         # assuming action1 means action for link1, etc
       actions = calcTorques(arm.state, prev_state, prev_time, sums, target) # N torque # Change this based on your controller
-      sums = actions[2] 
+      sums = actions[2]
       prev_time = time.time()
       prev_state = arm.state
       
@@ -231,7 +234,7 @@ if __name__ == '__main__':
     if(target == a or target == b or target == c):
       print("WAYPOINT!")
       print(time.time() - start_time)
-      time.sleep(2)
+      time.sleep(1)
       
   print("Done")
   input("Press Enter to close...")
