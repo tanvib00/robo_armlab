@@ -25,7 +25,9 @@ def astar(waypoints, x_start, y_start, x_end, y_end):
             dmin_e = d_e
     # now we have start and end waypoints for the search
     # begin astar graph search here with h=euclideanDistance
+    
     goal = goalSearch(waypoints,start,end)
+    
     # get path from goal node
     path = [(goal.x,goal.y), (x_end,y_end)]
     node = goal

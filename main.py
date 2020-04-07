@@ -113,17 +113,11 @@ if __name__ == '__main__':
   
   # Plan a path
   ax, ay, bx, by, cx, cy = doInverseKinematics(Ax, Ay, Bx, By, Cx, Cy)
-  
-  print(3)
 
   course = pathfind.generateMap() # generate map: list of waypoints # TODO
   path1 = astar(course, 0, 0, ax, ay) # get the path as a list of tuples
   
-  print(4)
-  
   path2 = astar(course, ax, ay, bx, by) # get the path as a list of tuples
-  
-  print(5)
   
   path3 = astar(course, bx, by, cx, cy) # get the path as a list of tuples
   
