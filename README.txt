@@ -4,3 +4,6 @@ also included in our pdf submission.
 
 An important note is that it does take about 15-20 seconds for our config space
 script to run. Please be patient.
+
+
+Run main.py

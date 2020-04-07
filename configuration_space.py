@@ -70,10 +70,6 @@ def calc_space():
 
 image = calc_space()
 
-#config = calc_space()
-#plt.imsave('./1.2_images/config_space.png', config)
-#image = mpimg.imread('./1.2_images/config_space.png')
-
 plt.imshow(image, extent=[0,180,-180,180])
 plt.xlabel("Theta 1 (deg)")
 plt.ylabel("Theta 2 (deg)")
