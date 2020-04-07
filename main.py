@@ -81,6 +81,11 @@ def calcTorques(state, prev_state, prev_time, sums, target):
   return(tor1, tor2, sums)
 
 
+def clearParents(waypoints):
+    for w in waypoints:
+        w.parent = None
+
+
 if __name__ == '__main__':
 
   arm = AcrobotEnv() # set up an instance of the arm class
@@ -194,6 +199,4 @@ if __name__ == '__main__':
   input("Press Enter to close...")
   arm.close()
 
-def clearParents(waypoints):
-    for w in waypoints:
-        w.parent = None
+
