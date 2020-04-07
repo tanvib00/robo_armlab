@@ -116,8 +116,10 @@ if __name__ == '__main__':
 
   course = pathfind.generateMap() # generate map: list of waypoints # TODO
   path1 = astar(course, 0, 0, ax, ay) # get the path as a list of tuples
+  clearParents(course)
   
   path2 = astar(course, ax, ay, bx, by) # get the path as a list of tuples
+  clearParents(course)
   
   path3 = astar(course, bx, by, cx, cy) # get the path as a list of tuples
   
