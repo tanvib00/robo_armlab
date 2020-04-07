@@ -90,7 +90,7 @@ def generateMap():
 
 
 ''' Define when the robot can stop moving '''
-def closeEnough(curr, end, radius=0.25):
+def closeEnough(curr, end, radius=2.5):
     if (euclideanDistance(curr, end) < radius):
         return True
     else:
