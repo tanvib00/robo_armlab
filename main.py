@@ -38,8 +38,8 @@ def doInverseKinematics(Ax, Ay, Bx, By, Cx, Cy):
   return (np.rad2deg(A1), np.rad2deg(A2), np.rad2deg(B1), np.rad2deg(B2), np.rad2deg(C1), np.rad2deg(C2))
 
 
-#TODO: calculate the torques. can do PID in here maybe
-def calcTorques(state, prev_state, prev_time, sums, target):
+
+def calcTorques(state, prev_time, sums, target):
   
   # link 1 is 0.005 kg
   # link 2 is 0.001 kg
@@ -56,22 +56,6 @@ def calcTorques(state, prev_state, prev_time, sums, target):
   
   dt = time.time() - prev_time
   
-  # delta1 = prev_state[0] - state[0]
-  # delta2 = prev_state[1] - state[1]
-  
-  # # Adjust for modular ambiguity    
-  # if (delta2 > math.pi):
-  #   delta2 = (2 * math.pi) - delta2 
-  # elif (delta2 < (-1 * math.pi)):
-  #   delta2 = (2 * math.pi) + delta2
-    
-  # dt1 = 0
-  # dt2 = 0
-  
-  # if (dt != 0):
-  #   dt1 = delta1 / dt
-  #   dt2 = delta2 / dt
-  
   t1err = np.deg2rad(target[0]) - state[0]
   t2err = np.deg2rad(target[1]) - state[1]
   
@@ -85,10 +69,8 @@ def calcTorques(state, prev_state, prev_time, sums, target):
   sums[1] = sums[1] + (t2err * dt)
     
   tor1 = Kp1 * t1err - Kd1 * state[2] + Ki1 * sums[0] + Kg1
-  tor2 = Kp2 * t2err - Kd2 * state[3] + Ki2 * sums[1] + Kg2 # - (offset * (t2actual / 90.0))
+  tor2 = Kp2 * t2err - Kd2 * state[3] + Ki2 * sums[1] + Kg2 
   
-  #print(Kp2 * t2err, -1 * Kd2 * state[3])
-  #print(np.deg2rad(Kp2 * t2err), np.deg2rad(Kd2 * dt2))
   return(tor1, tor2, sums)
 
 
@@ -102,11 +84,6 @@ if __name__ == '__main__':
   arm = AcrobotEnv() # set up an instance of the arm class
   
   timeStep = 0.02 # sec
-  timeForEachMove = 3 # sec
-  stepsForEachMove = round(timeForEachMove/timeStep)
-
-  # Make configuration space
-  # Insert you code or calls to functions here
 
   # Get three waypoints from the user
   Ax = int(input("Type Ax: "))
@@ -123,21 +100,20 @@ if __name__ == '__main__':
   arm.Cx = Cx*0.0254; # Simulaiton is in SI units
   arm.Cy = Cy*0.0254; # Simulaiton is in SI units
   
-  # Plan a path
   ax, ay, bx, by, cx, cy = doInverseKinematics(Ax, Ay, Bx, By, Cx, Cy)
 
-  course = pathfind.generateMap() # generate map: list of waypoints # TODO
-  path1 = astar(course, 0, 0, ax, ay) # get the path as a list of tuples
+  course = pathfind.generateMap() # generate map: list of waypoints
+  path1 = astar(course, 0, 0, ax, ay) # get the path1 as a list of tuples
   clearParents(course)
   
-  path2 = astar(course, ax, ay, bx, by) # get the path as a list of tuples
+  path2 = astar(course, ax, ay, bx, by) # get the path2 as a list of tuples
   clearParents(course)
   
-  path3 = astar(course, bx, by, cx, cy) # get the path as a list of tuples
+  path3 = astar(course, bx, by, cx, cy) # get the path3 as a list of tuples
   
-  pth = [path1[0:-1], path2[0:-1], path3]
+  pth = [path1[0:-1], path2[0:-1], path3] # put them all together
   path = [i for lst in pth for i in lst]
-  numberOfWaypoints = len(path) # Change this based on your path
+  numberOfWaypoints = len(path)
   
   a = (ax,ay)
   b = (bx,by)
@@ -147,6 +123,7 @@ if __name__ == '__main__':
   
   oldPath = copy.deepcopy(path)
   
+  # Add midpoints along path
   for i in range(numberOfWaypoints - 1):
     midx = (oldPath[i][0] + oldPath[i+1][0]) / 2
     avgy = (oldPath[i][1] + oldPath[i+1][1]) / 2
@@ -161,51 +138,42 @@ if __name__ == '__main__':
     path.insert(2 * i + 1, (midx, midy))
     
   numberOfWaypoints = len(path)
-  print("Path points: ", path) # display path
   
   robotPos = [0,0]
   arm.reset() # start simulation
   
   start_time = time.time()
-  prev_state = arm.state
-  
+  wp_time = start_time # time to each waypoint
   
   for idx in range(1, numberOfWaypoints):
 
-    # Get current waypoint
+    # Get current target
     target = path[idx]
-    print(target)
     sums = [0, 0]
     prev_time = time.time()
     
-
-    while (((target == a or target == b or target == c) and not closeEnough(robotPos, target, 0.5)) or (target != a and target != b and target != c and not closeEnough(robotPos, target))):
-      # print(arm.state[0], arm.state[1])
+    while (((target == a or target == b or target == c) and not closeEnough(robotPos, target, 0.5)) \
+           or (target != a and target != b and target != c and not closeEnough(robotPos, target))):
+            
       
-        # assuming action1 means action for link1, etc
-      actions = calcTorques(arm.state, prev_state, prev_time, sums, target) # N torque # Change this based on your controller
+      actions = calcTorques(arm.state, prev_time, sums, target)
       sums = actions[2]
       prev_time = time.time()
-      prev_state = arm.state
-      
       
       state, reward, terminal , __ = arm.step(actions[0], actions[1])
       
       arm.render() # Update rendering
-
-      # if target is a, b, or c
-      #     hold
       
       robotPos = [np.rad2deg(arm.state[0]), np.rad2deg(arm.state[1])]
     
-    print(robotPos)
+    
     if(target == a or target == b or target == c):
       print("WAYPOINT!")
-      print(time.time() - start_time)
+      print("Time to Waypoint: %.2f" % (time.time() - wp_time))
       time.sleep(1)
+      wp_time = time.time()
       
   print("Done")
+  print("Total run time: %.2f" % (time.time() - start_time))
   input("Press Enter to close...")
   arm.close()
-
-

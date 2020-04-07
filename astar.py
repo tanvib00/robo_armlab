@@ -7,6 +7,7 @@ Created on Sun Feb 16 19:15:57 2020
 
 from math import sqrt
 import heapq
+import copy
 
 
 # returns list of tuple x and y
@@ -26,7 +27,8 @@ def astar(waypoints, x_start, y_start, x_end, y_end):
     # now we have start and end waypoints for the search
     # begin astar graph search here with h=euclideanDistance
     
-    goal = goalSearch(waypoints,start,end)
+    waypoint_cpy = copy.deepcopy(waypoints)
+    goal = goalSearch(waypoint_cpy,start,end)
     
     # get path from goal node
     path = [(goal.x,goal.y), (x_end,y_end)]
@@ -43,13 +45,14 @@ def goalSearch(waypoints,start,goal):
     # initiate frontier
     frontier = PriorityQueue()
     frontier.push(start,euclideanDistance(start.x,start.y,goal.x,goal.y))
-    waypoints.remove(start)
+    # waypoints.remove(start)
     while True:
         if frontier.isEmpty():
             raise ValueError('No goal node found.')
         else:
             # pop the next node on the frontier
             curr_node, priority = frontier.pop()
+            
             # add to explored
             explored.append(curr_node)
             # check if this contains goal node
