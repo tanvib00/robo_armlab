@@ -6,7 +6,8 @@ path = [(0, 0), (24, 29), (12, 89), (58, 101), (71.39681928670433, 78.3330612939
 
 def show_path(path, a, b, c):
     #image = calc_space()
-    image = mpimg.imread('./1.2_images/config_space.png')
+    #image = mpimg.imread('./1.2_images/config_space.png')
+    image = mpimg.imread('./waypoints/config_space copy 3.png')
 
     plt.imshow(image, extent=[0,180,-180,180])
     plt.xlabel("Theta 1 (deg)")
