@@ -99,8 +99,6 @@ if __name__ == '__main__':
   By = int(input("Type By: "))
   Cx = int(input("Type Cx: "))
   Cy = int(input("Type Cy: "))
-  
-  print(1)
 
   arm.Ax = Ax*0.0254; # Simulaiton is in SI units
   arm.Ay = Ay*0.0254; # Simulaiton is in SI units
@@ -108,8 +106,6 @@ if __name__ == '__main__':
   arm.By = By*0.0254; # Simulaiton is in SI units
   arm.Cx = Cx*0.0254; # Simulaiton is in SI units
   arm.Cy = Cy*0.0254; # Simulaiton is in SI units
-
-  print(2)
   
   # Plan a path
   ax, ay, bx, by, cx, cy = doInverseKinematics(Ax, Ay, Bx, By, Cx, Cy)
@@ -123,7 +119,6 @@ if __name__ == '__main__':
   
   path3 = astar(course, bx, by, cx, cy) # get the path as a list of tuples
   
-  print(6)
   pth = [path1, path2, path3]
   path = [i for lst in pth for i in lst]
   numberOfWaypoints = len(path) # Change this based on your path
