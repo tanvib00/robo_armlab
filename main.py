@@ -48,7 +48,7 @@ def calcTorques(state, prev_state, prev_time, sums, target):
   Ki1 = 0.035#5
   
   Kp2 = 0.01 # 0.00001
-  Kd2 = 0.000125#1
+  Kd2 = 0.000128#1
   Ki2 = 0.005#1
   
   Kg1 = (0.002336* math.cos(state[0]) + (0.00981 * (0.09525 * math.cos(state[0]) + 0.03175 * math.cos(state[0] + state[1]))))
@@ -139,8 +139,12 @@ if __name__ == '__main__':
   path = [i for lst in pth for i in lst]
   numberOfWaypoints = len(path) # Change this based on your path
   
-  show_path(path)
-  '''
+  a = (ax,ay)
+  b = (bx,by)
+  c = (cx,cy)
+  
+  show_path(path, a, b, c)
+  
   oldPath = copy.deepcopy(path)
   
   for i in range(numberOfWaypoints - 1):
@@ -157,48 +161,12 @@ if __name__ == '__main__':
     path.insert(2 * i + 1, (midx, midy))
     
   numberOfWaypoints = len(path)
-    
   print("Path points: ", path) # display path
-  '''
   
   robotPos = [0,0]
-  
-  a = (ax,ay)
-  b = (bx,by)
-  c = (cx,cy)
-
-  index = 1 # where we are in the path list
-  # target_point1 = path[index]
-  # on_point = False
-
-  '''
-  while (euclideanDistance(robotPos, path[index]) < 4.0 and not on_point):
-    path.pop(index)
-    target_point = path[index]
-    if index >= len(path):
-    index = - 1
-    target_point = list(path[-1])
-          on_point = True
-
-  # this got rid of last waypoint on path if it was close enough to the endpoint
-  if (euclideanDistance(path[-1], path[-2]) < 4.0):
-    path[-2] = path[-1]
-    path.pop()
-
-  while (not closeEnough(tuple(robotPos), endPos)):
-
-    start_time = time.time()
-
-    if (closeEnough(tuple(robotPos), tuple(target_point))):
-          index += 1
-    target_point = path[index]
-  
-  '''
-  
   arm.reset() # start simulation
   
   start_time = time.time()
-
   prev_state = arm.state
   
   
