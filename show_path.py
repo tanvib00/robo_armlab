@@ -14,5 +14,17 @@ def show_path(path):
     plt.xticks(np.arange(0, 181, 45))
     plt.yticks(np.arange(-180, 181, 45))
 
+    # draw lines
+    lines = []
+    for i in range(len(path)-1):
+        lines.append([path[i],path[i+1]])
+    
+    for l in lines:
+        plt.plot([l[0][0],l[1][0]], [l[0][1],l[1][1]], 'w')
+
+
+
+
     #plt.plot(path)
     plt.show()
+
