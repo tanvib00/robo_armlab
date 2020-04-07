@@ -4,7 +4,7 @@ import matplotlib.image as mpimg
 
 path = [(0, 0), (24, 29), (12, 89), (58, 101), (71.39681928670433, 78.33306129395558), (71.39681928670433, 78.33306129395558), (58, 101), (105, 123), (85.78158253829884, 105.07006214488884), (85.78158253829884, 105.07006214488884), (105, 123), (58, 101), (12, 89), (9.895047045165176, 94.71631062820448)]
 
-def show_path(path):
+def show_path(path, a, b, c):
     #image = calc_space()
     image = mpimg.imread('./1.2_images/config_space.png')
 
@@ -30,6 +30,10 @@ def show_path(path):
         else:
             plt.plot([l[0][0],l[1][0]], [l[0][1],l[1][1]], 'w')
 
+    plt.plot(a[0], a[1], 'bo')
+    plt.plot(b[0], b[1], 'bo')
+    plt.plot(c[0], c[1], 'bo')
+
     axes = plt.gca()
     axes.set_xlim([0,180])
     axes.set_ylim([-180,180])
@@ -37,4 +41,3 @@ def show_path(path):
 
     #plt.plot(path)
     plt.show()
-
